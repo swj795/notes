@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <to-do-list >
+            <to-do-item v-for='item in list' :title='item.title' :del='item.del' >
+               <template v-slot:pre-icon="{value}">
+                   <span>前置图标{{value}}</span>
+               </template>
+                <!-- <span slot="preIcon" :value="{value}">前置图标</span> -->
+                <!-- <span slot="sufIcon">后置图标</span> -->
+                <template v-slot:suf-icon>
+                    <span >后置图标</span>
+                </template>
+            </to-do-item>
+        </to-do-list>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.7/dist/vue.js"></script>
+    <script>
+        Vue.component('to-do-item',{
+            props: {
+                title:String,
+                del: {
+                    type: Boolean,
+                    default: false,
+                }
+            },
+            template: `
+                <li>
+                    <slot name='pre-icon' :value='value'></slot>
+                    <p v-if='!del'>{{title}}</p>
+                    <p v-else style='text-decoration: line-through'>{{title}}</p>
+                    <slot name='suf-icon'></slot>
+                    <button @click='handleClick'>删除</button>
+
+                </li>
+            `,
+            data: () => {
+                return {
+                    value: Math.random(),
+                }
+            },
+            methods: {
+                handleClick(){
+                    console.log('1111');
+                    this.$emit('delete',this.title)
+                },
+            },
+        })
+        Vue.component('to-do-list',{
+            template: `
+                <ul>
+                    <slot></slot>
+                </ul>
+            `,
+            data: () => {
+                return {
+                   
+                }
+            },
+            
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                message: 'hello word',
+                list: [
+                    {
+                        title: '课程1',
+                        del: true,
+                    },
+                    {
+                        title: '课程2',
+                        del: false,
+                    },
+                ],
+            },
+            methods: {
+                handleDelete(val) {
+                    console.log(val,'222');
+                }
+            },
+        })
+    </script>
+</body>
+</html>
